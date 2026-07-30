@@ -1,0 +1,18 @@
+import { useState, type FormEvent } from "react";
+import { apiRequest, formatRs, today } from "../api";
+import { AppSelect } from "../components/AppSelect";
+import { useApiList } from "../hooks/useApiList";
+import appStyles from "../styles/app.module.css";
+import type { Loss } from "../types";
+
+// Lists open claims and records recovery as a dated event without overwriting loss history.
+export function LossesPage() {
+  const losses = useApiList<Loss>("/api/losses", "losses"); const [lossId, setLossId] = useState(""); const [status, setStatus] = useState("refunded"); const [saving, setSaving] = useState(false); const [error, setError] = useState(""); const [message, setMessage] = useState("");
+  // Finalizes a refund or replacement against the selected historical loss entry.
+  async function recoverLoss(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault(); if (!lossId) return; const form = new FormData(event.currentTarget); setSaving(true); setError(""); setMessage("");
+    try { await apiRequest(`/api/losses/${lossId}/recover`, { method: "PATCH", body: JSON.stringify({ recovery_status: status, recovery_value: Number(form.get("value")), recovery_date: form.get("date") }) }); setMessage(`Loss #${lossId} marked ${status}.`); setLossId(""); await losses.refresh(); }
+    catch (caughtError) { setError(caughtError instanceof Error ? caughtError.message : "Recovery could not be recorded."); } finally { setSaving(false); }
+  }
+  return <><header className={appStyles.pageHeader}><div><p className={appStyles.eyebrow}>Claims</p><h1 className={appStyles.title}>Loss & Recovery</h1><p className={appStyles.subtitle}>Open and pending transit-loss claims.</p></div></header><div className={appStyles.contentStack}>{(losses.error || error) && <div className={appStyles.error}>{losses.error || error}</div>}{message && <div className={appStyles.success}>{message}</div>}<form className={`${appStyles.card} ${appStyles.formGrid}`} onSubmit={recoverLoss}><h2 className={`${appStyles.cardTitle} ${appStyles.full}`}>Record recovery</h2><div className={appStyles.full}><AppSelect label="Loss entry" value={lossId} onValueChange={setLossId} options={losses.data.map((loss) => ({ value: String(loss.lossId), label: `#${loss.lossId} · ${loss.designName} · ${formatRs(loss.lossValue)}` }))} /></div><AppSelect label="Recovery type" value={status} onValueChange={setStatus} options={[{ value: "refunded", label: "Refunded" }, { value: "replaced", label: "Replaced" }]} /><label className={appStyles.field}>Recovery value<input required name="value" type="number" min="0" className={appStyles.input} /></label><label className={appStyles.field}>Recovery date<input required name="date" type="date" defaultValue={today()} className={appStyles.input} /></label><button className={`${appStyles.button} ${appStyles.full}`} disabled={!lossId || saving}>{saving ? "Saving…" : "Mark Recovered"}</button></form><section className={appStyles.card}><div className={appStyles.tableWrap}><table className={appStyles.table}><thead><tr><th>Loss</th><th>Bundle</th><th>Items</th><th>Value</th><th>Status</th></tr></thead><tbody>{losses.loading ? <tr><td colSpan={5} className={appStyles.empty}>Loading losses…</td></tr> : losses.data.length === 0 ? <tr><td colSpan={5} className={appStyles.empty}>No open losses.</td></tr> : losses.data.map((loss) => <tr key={loss.lossId}><td>#{loss.lossId}<br /><span className={appStyles.muted}>{loss.lossDate}</span></td><td>#{loss.bundleId}<br /><span className={appStyles.muted}>{loss.designName}</span></td><td>{loss.itemsLost}</td><td>{formatRs(loss.lossValue)}</td><td><span className={appStyles.pill}>{loss.recoveryStatus}</span></td></tr>)}</tbody></table></div></section></div></>;
+}

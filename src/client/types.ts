@@ -1,0 +1,6 @@
+export type ItemStatus = "in_stock" | "sold" | "damaged" | "returned";
+export type RecoveryStatus = "none" | "pending_claim" | "refunded" | "replaced";
+export type Item = { itemId: number; bundleId: number; variant: string | null; costPrice: number; markedPrice: number; listedPrice: number; targetPrice: number; floorPrice: number; maxDiscountPercent: number; status: ItemStatus; bundleType: string; designName: string };
+export type Bundle = { bundleId: number; orderId: number; type: string; designName: string; itemsOrdered: number; costPerItem: number; bundleTotalCost: number; status: string; itemsReceived: number; arrivalDate: string | null; supplierOrCountry: string };
+export type Order = { orderId: number; supplierOrCountry: string; orderDate: string; transportationFee: number; expectedBundleCount: number; status: string };
+export type Loss = { lossId: number; bundleId: number; lossType: string; itemsLost: number; lossValue: number; lossDate: string; recoveryStatus: RecoveryStatus; recoveryValue: number | null; recoveryDate: string | null; replacementBundleId: number | null; bundleType: string; designName: string };

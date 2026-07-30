@@ -1,0 +1,41 @@
+{
+  "name": "shop-manager",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": "22.x || >=24"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "dev:client": "vite",
+    "build": "vite build",
+    "start": "tsx src/server/index.ts",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/server/db/migrate.ts",
+    "db:seed": "tsx src/server/db/seed.ts",
+    "db:import": "tsx src/server/db/import-csv.ts"
+  },
+  "dependencies": {
+    "@fastify/static": "^8.3.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-select": "^2.2.6",
+    "drizzle-orm": "1.0.0-beta.16-c2458b2",
+    "fastify": "^5.6.0",
+    "pm2": "^6.0.14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "drizzle-kit": "1.0.0-beta.16-c2458b2",
+    "tsx": "^4.20.0",
+    "typescript": "~6.0.0",
+    "vite": "^7.3.0"
+  }
+}

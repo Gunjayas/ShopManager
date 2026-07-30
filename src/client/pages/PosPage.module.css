@@ -1,0 +1,16 @@
+.search { min-height: 3.25rem; font-size: 1.05rem; }
+.browseRow { display: grid; gap: var(--space-3); }
+.results { display: grid; gap: var(--space-2); max-height: 19rem; overflow-y: auto; }
+.result { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2); padding: var(--space-3); color: inherit; background: var(--color-canvas); border: 1px solid transparent; border-radius: var(--radius-md); text-align: left; }
+.result:hover, .resultSelected { background: var(--color-brand-soft); border-color: var(--color-brand); }
+.resultTitle { font-weight: 800; }
+.resultMeta { color: var(--color-muted); font-size: var(--font-xs); }
+.price { color: var(--color-brand-dark); font-weight: 900; }
+.salePanel { display: grid; gap: var(--space-3); }
+.selectedDetails { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-2); padding: var(--space-3); background: var(--color-canvas); border-radius: var(--radius-md); }
+.metric { display: grid; gap: .15rem; }
+.metric span { color: var(--color-muted); font-size: var(--font-xs); }
+.metric strong { font-size: 1.05rem; }
+.sellingPrice { min-height: 3.5rem; font-size: 1.35rem; font-weight: 900; }
+.confirm { width: 100%; min-height: 3.5rem; font-size: 1.05rem; }
+@media (min-width: 760px) { .posGrid { display: grid; grid-template-columns: 1.1fr .9fr; gap: var(--space-4); align-items: start; } .browseRow { grid-template-columns: 1fr 1fr; } }
