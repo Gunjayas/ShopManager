@@ -1,0 +1,44 @@
+.backLink {
+  min-height: 2.75rem;
+  padding: 0.65rem 0.85rem;
+  color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  border-radius: var(--radius-input);
+  font-size: var(--font-sm);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.contents { display: grid; gap: var(--space-3); margin-bottom: var(--space-4); }
+.contentsLinks { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.contentsLinks a {
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-sm);
+  font-weight: 700;
+}
+.guide { display: grid; gap: var(--space-4); }
+.section { scroll-margin-top: var(--space-4); }
+.section h2 { margin: 0 0 var(--space-4); font-size: var(--font-lg); }
+.section h3 { margin: var(--space-5) 0 var(--space-2); font-size: var(--font-md); }
+.section p { margin: 0 0 var(--space-3); }
+.section p:last-child { margin-bottom: 0; }
+.section ol { margin: 0 0 var(--space-4); padding-left: var(--space-5); }
+.section li + li { margin-top: var(--space-2); }
+.definitions, .statuses { display: grid; gap: var(--space-2); margin: 0 0 var(--space-4); }
+.definitions div, .statuses div {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: var(--color-neutral-50);
+  border-radius: var(--radius-input);
+}
+.definitions dt, .statuses dt { font-weight: 800; }
+.definitions dd, .statuses dd { margin: 0; color: var(--color-neutral-500); }
+.report { padding: var(--space-4) 0; border-top: 1px solid var(--color-neutral-200); }
+.report:first-of-type { margin-top: var(--space-4); }
+.report h3 { margin-top: 0; }
+@media (min-width: 700px) {
+  .definitions, .statuses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

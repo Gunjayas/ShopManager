@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -euo pipefail
 
-APP_DIR="${SHOP_MANAGER_DIR:-$HOME/shop-manager}"
+APP_DIR="${SHOP_MANAGER_DIR:-$HOME/ShopManager}"
 PM2_COMMAND="$APP_DIR/node_modules/.bin/pm2"
 export PM2_HOME="${PM2_HOME:-$HOME/.pm2}"
 

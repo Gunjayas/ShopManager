@@ -1,7 +1,7 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set -euo pipefail
 
-APP_DIR="${SHOP_MANAGER_DIR:-$HOME/shop-manager}"
+APP_DIR="$HOME/ShopManager"
 DATABASE_SETTING="${DATABASE_PATH:-shop.db}"
 RCLONE_DESTINATION="${RCLONE_DESTINATION:-gdrive:ShopManager/backups}"
 BACKUP_TIMESTAMP="$(date +%Y-%m-%d_%H-%M-%S)"
