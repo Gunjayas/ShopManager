@@ -72,7 +72,6 @@ export const sales = sqliteTable("sales", {
   saleId: integer("sale_id").primaryKey({ autoIncrement: true }),
   itemId: integer("item_id")
     .notNull()
-    .unique()
     .references(() => inventoryItems.itemId, { onDelete: "restrict" }),
   saleDate: text("sale_date").notNull(),
   sellingPrice: integer("selling_price").notNull(),

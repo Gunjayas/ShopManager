@@ -66,6 +66,20 @@ export const registerReportRoutes: RouteRegistrar = async (app, database) => {
     return { threshold_days: threshold, items: deadStock };
   });
 
+  // Ranks product designs by active sold units and their average days from arrival to sale.
+  app.get("/api/reports/movers", async () => {
+    const movers = await database.select({
+      type: bundles.type,
+      designName: bundles.designName,
+      unitsSold: sql<number>`count(${sales.saleId})`,
+      averageDaysToSell: sql<number>`round(avg(julianday(${sales.saleDate}) - julianday(${bundles.arrivalDate})), 1)`,
+    }).from(sales).innerJoin(inventoryItems, eq(sales.itemId, inventoryItems.itemId))
+      .innerJoin(bundles, eq(inventoryItems.bundleId, bundles.bundleId))
+      .where(and(eq(sales.status, "active"), sql`${bundles.arrivalDate} is not null`))
+      .groupBy(bundles.type, bundles.designName);
+    return { movers };
+  });
+
   // Groups transit losses by order and bundle without hiding historical recovery amounts.
   app.get("/api/reports/transit-loss", async () => {
     const groupedLosses = await database.select({
@@ -105,6 +119,7 @@ export const registerReportRoutes: RouteRegistrar = async (app, database) => {
       database.select({
         bundleId: inventoryItems.bundleId,
         itemProfit: sum(sales.profit).as("item_profit"),
+        salesRevenue: sum(sales.sellingPrice).as("sales_revenue"),
       }).from(sales).innerJoin(inventoryItems, eq(sales.itemId, inventoryItems.itemId))
         .where(eq(sales.status, "active")).groupBy(inventoryItems.bundleId),
     );
@@ -120,6 +135,7 @@ export const registerReportRoutes: RouteRegistrar = async (app, database) => {
       type: bundles.type,
       designName: bundles.designName,
       itemProfit: sql<number>`coalesce(${salesByBundle.itemProfit}, 0)`,
+      salesRevenue: sql<number>`coalesce(${salesByBundle.salesRevenue}, 0)`,
       lossValue: sql<number>`coalesce(${lossesByBundle.lossValue}, 0)`,
       profitability: sql<number>`coalesce(${salesByBundle.itemProfit}, 0) - coalesce(${lossesByBundle.lossValue}, 0)`,
     }).from(bundles).leftJoin(salesByBundle, eq(bundles.bundleId, salesByBundle.bundleId))

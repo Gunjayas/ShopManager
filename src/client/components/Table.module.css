@@ -1,0 +1,41 @@
+/* Horizontally scrollable data tables sized for a narrow Android viewport. */
+.tableWrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-card);
+}
+.table {
+  width: 100%;
+  min-width: 38rem;
+  border-collapse: collapse;
+  font-size: var(--font-sm);
+}
+.table th,
+.table td {
+  padding: var(--space-3);
+  border-bottom: 1px solid var(--color-neutral-200);
+  text-align: left;
+  vertical-align: top;
+}
+.table th {
+  color: var(--color-neutral-500);
+  background: var(--color-neutral-50);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.table tbody tr:last-child td { border-bottom: 0; }
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  border-radius: var(--radius-pill);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  white-space: nowrap;
+}

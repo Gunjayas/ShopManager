@@ -57,7 +57,7 @@ export const registerSaleRoutes: RouteRegistrar = async (app, database) => {
     return reply.status(201).send(saleResult);
   });
 
-  // Reverses an active sale by nullifying profit and retaining both the sale and return date.
+  // Reverses an active sale while preserving its history and restocking the physical item.
   app.post<{ Params: { id: string }; Body: ReturnBody }>("/api/sales/:id/return", async (request) => {
     const saleId = parseId(request.params.id, "sale id");
     const returnDate = parseDate(request.body?.return_date, "return_date", true);
@@ -71,7 +71,7 @@ export const registerSaleRoutes: RouteRegistrar = async (app, database) => {
         returnedDate: returnDate,
         profit: null,
       }).where(eq(sales.saleId, saleId)).returning().get();
-      const returnedItem = transaction.update(inventoryItems).set({ status: "returned" })
+      const returnedItem = transaction.update(inventoryItems).set({ status: "in_stock" })
         .where(eq(inventoryItems.itemId, saleToReturn.itemId)).returning().get();
       return { sale: returnedSale, item: returnedItem };
     });

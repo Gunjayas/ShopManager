@@ -6,6 +6,20 @@ import type { RouteRegistrar } from "./types.js";
 
 // Registers item pricing, bundle pricing, and stock-removal workflows.
 export const registerItemRoutes: RouteRegistrar = async (app, database) => {
+  // Updates one item's optional identity variant and mutable prices without exposing inherited cost.
+  app.patch<{ Params: { id: string }; Body: PricingInput & { variant?: string | null } }>("/api/items/:id", async (request) => {
+    const itemId = parseId(request.params.id, "item id");
+    const body = request.body ?? {};
+    const mutableItemFields = {
+      ...parsePricing(body),
+      variant: typeof body.variant === "string" ? body.variant.trim() || null : null,
+    };
+    const [updatedItem] = await database.update(inventoryItems).set(mutableItemFields)
+      .where(eq(inventoryItems.itemId, itemId)).returning();
+    if (!updatedItem) throw new ApiError(404, "Item not found", "The requested inventory item does not exist.");
+    return { item: updatedItem };
+  });
+
   // Changes customer-facing prices while deliberately excluding immutable cost_price.
   app.patch<{ Params: { id: string }; Body: PricingInput }>("/api/items/:id/pricing", async (request) => {
     const itemId = parseId(request.params.id, "item id");

@@ -1,5 +1,10 @@
+/* Inventory-only layout: the filter grid, the action toolbar, and the bulk-price dialog body. */
 .filters { display: grid; gap: var(--space-3); }
 .toolbar { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-3); }
-.dialogForm { display: grid; gap: var(--space-3); }
-.dialogDescription { margin: calc(var(--space-3) * -1) 0 var(--space-4); color: var(--color-muted); font-size: var(--font-sm); }
-@media (min-width: 700px) { .filters { grid-template-columns: 1fr 1fr; } }
+.list { display: grid; gap: var(--space-4); }
+.empty { padding: var(--space-6); color: var(--color-muted); text-align: center; border: 1px dashed var(--color-line); border-radius: var(--radius-card); }
+.bulkForm { grid-column: 1 / -1; padding-top: var(--space-4); border-top: 1px solid var(--color-line); }
+.bulkNote { display: grid; gap: var(--space-1); color: var(--color-muted); font-size: var(--font-sm); }
+@media (min-width: 700px) {
+  .filters { grid-template-columns: 1fr 1fr; }
+}

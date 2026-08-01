@@ -1,6 +1,16 @@
-import { desc, eq, inArray } from "drizzle-orm";
-import { bundles, inventoryItems, lossEntries, orders } from "../db/schema.js";
+import { desc, eq } from "drizzle-orm";
+import {
+  bundles,
+  inventoryItems,
+  inventoryItemStatuses,
+  lossEntries,
+  orders,
+  sales,
+} from "../db/schema.js";
+import { ApiError, parseId } from "./http.js";
 import type { RouteRegistrar } from "./types.js";
+
+type InventoryItemStatus = (typeof inventoryItemStatuses)[number];
 
 // Registers read-only catalog endpoints needed by the local shop interface.
 export const registerCatalogRoutes: RouteRegistrar = async (app, database) => {
@@ -8,6 +18,26 @@ export const registerCatalogRoutes: RouteRegistrar = async (app, database) => {
   app.get("/api/orders", async () => {
     const orderRows = await database.select().from(orders).orderBy(desc(orders.orderDate), desc(orders.orderId));
     return { orders: orderRows };
+  });
+
+  // Retrieves one purchase order so operational screens can load its settled details.
+  app.get<{ Params: { id: string } }>("/api/orders/:id", async (request) => {
+    const orderId = parseId(request.params.id, "order id");
+    const [order] = await database.select().from(orders).where(eq(orders.orderId, orderId)).limit(1);
+    if (!order) throw new ApiError(404, "Order not found", "The requested order does not exist.");
+    return { order };
+  });
+
+  // Lists one order's bundles after confirming that the parent purchase exists.
+  app.get<{ Params: { id: string } }>("/api/orders/:id/bundles", async (request) => {
+    const orderId = parseId(request.params.id, "order id");
+    const [order] = await database.select({ orderId: orders.orderId }).from(orders)
+      .where(eq(orders.orderId, orderId)).limit(1);
+    if (!order) throw new ApiError(404, "Order not found", "The requested order does not exist.");
+
+    const bundleRows = await database.select().from(bundles)
+      .where(eq(bundles.orderId, orderId)).orderBy(desc(bundles.bundleId));
+    return { bundles: bundleRows };
   });
 
   // Lists bundles with order context for intake, pricing, and bundle browsing.
@@ -30,7 +60,13 @@ export const registerCatalogRoutes: RouteRegistrar = async (app, database) => {
   });
 
   // Lists inventory with bundle labels so staff can identify items without memorizing bundle IDs.
-  app.get("/api/items", async () => {
+  app.get<{ Querystring: { status?: string } }>("/api/items", async (request) => {
+    const requestedStatus = request.query.status;
+    if (requestedStatus !== undefined && !inventoryItemStatuses.includes(requestedStatus as InventoryItemStatus)) {
+      throw new ApiError(400, "Invalid item status", `status must be one of: ${inventoryItemStatuses.join(", ")}.`);
+    }
+    const itemStatus = requestedStatus as InventoryItemStatus | undefined;
+
     const itemRows = await database.select({
       itemId: inventoryItems.itemId,
       bundleId: inventoryItems.bundleId,
@@ -44,9 +80,32 @@ export const registerCatalogRoutes: RouteRegistrar = async (app, database) => {
       status: inventoryItems.status,
       bundleType: bundles.type,
       designName: bundles.designName,
+      arrivalDate: bundles.arrivalDate,
     }).from(inventoryItems).innerJoin(bundles, eq(inventoryItems.bundleId, bundles.bundleId))
+      .where(itemStatus ? eq(inventoryItems.status, itemStatus) : undefined)
       .orderBy(desc(inventoryItems.itemId));
     return { items: itemRows };
+  });
+
+  // Lists sales newest-first with item and bundle context for operational history.
+  app.get("/api/sales", async () => {
+    const saleRows = await database.select({
+      saleId: sales.saleId,
+      itemId: sales.itemId,
+      saleDate: sales.saleDate,
+      sellingPrice: sales.sellingPrice,
+      profit: sales.profit,
+      originalListedPrice: sales.originalListedPrice,
+      status: sales.status,
+      returnedDate: sales.returnedDate,
+      bundleId: inventoryItems.bundleId,
+      variant: inventoryItems.variant,
+      bundleType: bundles.type,
+      designName: bundles.designName,
+    }).from(sales).innerJoin(inventoryItems, eq(sales.itemId, inventoryItems.itemId))
+      .innerJoin(bundles, eq(inventoryItems.bundleId, bundles.bundleId))
+      .orderBy(desc(sales.saleDate), desc(sales.saleId));
+    return { sales: saleRows };
   });
 
   // Lists actionable loss claims while preserving finalized losses for historical reports.
@@ -62,10 +121,12 @@ export const registerCatalogRoutes: RouteRegistrar = async (app, database) => {
       recoveryValue: lossEntries.recoveryValue,
       recoveryDate: lossEntries.recoveryDate,
       replacementBundleId: lossEntries.replacementBundleId,
+      orderId: bundles.orderId,
       bundleType: bundles.type,
       designName: bundles.designName,
+      supplierOrCountry: orders.supplierOrCountry,
     }).from(lossEntries).innerJoin(bundles, eq(lossEntries.bundleId, bundles.bundleId))
-      .where(inArray(lossEntries.recoveryStatus, ["none", "pending_claim"]))
+      .innerJoin(orders, eq(bundles.orderId, orders.orderId))
       .orderBy(desc(lossEntries.lossDate), desc(lossEntries.lossId));
     return { losses: lossRows };
   });

@@ -1,0 +1,45 @@
+/* Shared page chrome: heading block, vertical stacks, and quiet text states. */
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.eyebrow {
+  margin: 0 0 var(--space-1);
+  color: var(--color-primary-600);
+  font-size: var(--font-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.title {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-xl);
+  line-height: 1.15;
+}
+.subtitle {
+  margin: var(--space-2) 0 0;
+  color: var(--color-neutral-500);
+  font-size: var(--font-sm);
+}
+.contentStack { display: grid; gap: var(--space-4); }
+.cardTitle {
+  margin: 0;
+  color: var(--color-neutral-900);
+  font-size: var(--font-lg);
+  line-height: 1.25;
+}
+.muted { color: var(--color-neutral-500); font-size: var(--font-sm); }
+.empty {
+  margin: 0;
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-neutral-500);
+  background: var(--color-neutral-50);
+  border: 1px dashed var(--color-neutral-200);
+  border-radius: var(--radius-card);
+  font-size: var(--font-sm);
+  text-align: center;
+}

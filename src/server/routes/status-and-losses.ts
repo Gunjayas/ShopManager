@@ -26,12 +26,10 @@ export const registerStatusAndLossRoutes: RouteRegistrar = async (app, database)
   app.patch<{ Params: { id: string }; Body: RecoveryBody }>("/api/losses/:id/recover", async (request) => {
     const lossId = parseId(request.params.id, "loss id");
     const body = request.body ?? {};
-    if (!body.recovery_status || !recoveryStatuses.includes(body.recovery_status)) {
-      throw new ApiError(400, "Invalid recovery", `recovery_status must be one of: ${recoveryStatuses.join(", ")}.`);
+    if (body.recovery_status !== "refunded" && body.recovery_status !== "replaced") {
+      throw new ApiError(400, "Invalid recovery", "recovery_status must be either 'refunded' or 'replaced'.");
     }
-    if (body.recovery_status === "none") {
-      throw new ApiError(400, "Invalid recovery", "Use a recovery status other than 'none' when recording a recovery event.");
-    }
+    const finalRecoveryStatus = body.recovery_status;
     const recoveryValue = requireNonNegativeInteger(body.recovery_value ?? 0, "recovery_value");
     const recoveryDate = parseDate(body.recovery_date, "recovery_date", true);
 
@@ -49,12 +47,12 @@ export const registerStatusAndLossRoutes: RouteRegistrar = async (app, database)
       }).from(lossEntries).innerJoin(bundles, eq(lossEntries.bundleId, bundles.bundleId))
         .where(eq(lossEntries.lossId, lossId)).limit(1).get();
       if (!lossToRecover) throw new ApiError(404, "Loss not found", "The requested loss entry does not exist.");
-      if (lossToRecover.recoveryStatus === "refunded" || lossToRecover.recoveryStatus === "replaced") {
+      if (lossToRecover.recoveryStatus !== "none" && lossToRecover.recoveryStatus !== "pending_claim") {
         throw new ApiError(409, "Recovery already finalized", "A finalized recovery cannot be overwritten.");
       }
 
       let replacementBundle = null;
-      if (body.recovery_status === "replaced") {
+      if (finalRecoveryStatus === "replaced") {
         if (lossToRecover.replacementBundleId) {
           throw new ApiError(409, "Replacement already created", "This loss already has a linked replacement bundle.");
         }
@@ -70,11 +68,13 @@ export const registerStatusAndLossRoutes: RouteRegistrar = async (app, database)
       }
 
       const recoveredLoss = transaction.update(lossEntries).set({
-        recoveryStatus: body.recovery_status,
+        recoveryStatus: finalRecoveryStatus,
         recoveryValue,
         recoveryDate,
         replacementBundleId: replacementBundle?.bundleId,
       }).where(eq(lossEntries.lossId, lossId)).returning().get();
+      transaction.update(bundles).set({ status: finalRecoveryStatus })
+        .where(eq(bundles.bundleId, lossToRecover.bundleId)).run();
       return { loss: recoveredLoss, replacement_bundle: replacementBundle };
     });
   });

@@ -24,7 +24,7 @@ type BundleBody = {
   cost_per_item?: number;
 };
 
-type ArrivalBody = { items_received?: number; arrival_date?: string };
+type ArrivalBody = { items_received?: number; arrival_date?: string; variant?: string };
 
 // Registers order, bundle, and arrival workflows that turn received goods into sellable items.
 export const registerIntakeRoutes: RouteRegistrar = async (app, database) => {
@@ -39,6 +39,20 @@ export const registerIntakeRoutes: RouteRegistrar = async (app, database) => {
     }).returning();
 
     return reply.status(201).send({ order: createdOrder });
+  });
+
+  // Corrects editable purchase facts without changing the order lifecycle status.
+  app.patch<{ Params: { id: string }; Body: OrderBody }>("/api/orders/:id", async (request) => {
+    const orderId = parseId(request.params.id, "order id");
+    const body = request.body ?? {};
+    const [updatedOrder] = await database.update(orders).set({
+      supplierOrCountry: requireText(body.supplier_or_country, "supplier_or_country"),
+      orderDate: parseDate(body.order_date, "order_date"),
+      transportationFee: requireNonNegativeInteger(body.transportation_fee ?? 0, "transportation_fee"),
+      expectedBundleCount: requirePositiveInteger(body.expected_bundle_count, "expected_bundle_count"),
+    }).where(eq(orders.orderId, orderId)).returning();
+    if (!updatedOrder) throw new ApiError(404, "Order not found", "The requested order does not exist.");
+    return { order: updatedOrder };
   });
 
   // Adds one purchase bundle and stores item cost separately from order transportation expense.
@@ -68,6 +82,7 @@ export const registerIntakeRoutes: RouteRegistrar = async (app, database) => {
     const body = request.body ?? {};
     const itemsReceived = requireNonNegativeInteger(body.items_received, "items_received");
     const arrivalDate = parseDate(body.arrival_date, "arrival_date", true);
+    const sharedVariant = typeof body.variant === "string" ? body.variant.trim() || null : null;
 
     const arrivalResult = database.transaction((transaction) => {
       const bundleToReceive = transaction.select().from(bundles).where(eq(bundles.bundleId, bundleId)).limit(1).get();
@@ -101,6 +116,7 @@ export const registerIntakeRoutes: RouteRegistrar = async (app, database) => {
       if (itemsReceived > 0) {
         const receivedItems = Array.from({ length: itemsReceived }, () => ({
           bundleId,
+          variant: sharedVariant,
           costPrice: bundleToReceive.costPerItem,
           markedPrice: bundleToReceive.costPerItem,
           listedPrice: bundleToReceive.costPerItem,

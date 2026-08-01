@@ -1,0 +1,679 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "fc025a53-6bc2-4ded-8dff-8984a5c59d4d",
+  "prevIds": [
+    "6db24b7a-e16a-4cc4-bb3a-df53208bee71"
+  ],
+  "ddl": [
+    {
+      "name": "bundles",
+      "entityType": "tables"
+    },
+    {
+      "name": "inventory_items",
+      "entityType": "tables"
+    },
+    {
+      "name": "loss_entries",
+      "entityType": "tables"
+    },
+    {
+      "name": "orders",
+      "entityType": "tables"
+    },
+    {
+      "name": "sale_price_corrections",
+      "entityType": "tables"
+    },
+    {
+      "name": "sales",
+      "entityType": "tables"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "bundle_id",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "order_id",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "type",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "design_name",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "items_ordered",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cost_per_item",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "bundle_total_cost",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'pending'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "items_received",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "arrival_date",
+      "entityType": "columns",
+      "table": "bundles"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "item_id",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "bundle_id",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "variant",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cost_price",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "marked_price",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "listed_price",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "target_price",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "floor_price",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "max_discount_percent",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'in_stock'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "inventory_items"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "loss_id",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "bundle_id",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "loss_type",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "items_lost",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "loss_value",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "loss_date",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'none'",
+      "generated": null,
+      "name": "recovery_status",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "recovery_value",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "recovery_date",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "replacement_bundle_id",
+      "entityType": "columns",
+      "table": "loss_entries"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "order_id",
+      "entityType": "columns",
+      "table": "orders"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "supplier_or_country",
+      "entityType": "columns",
+      "table": "orders"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "order_date",
+      "entityType": "columns",
+      "table": "orders"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "0",
+      "generated": null,
+      "name": "transportation_fee",
+      "entityType": "columns",
+      "table": "orders"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "expected_bundle_count",
+      "entityType": "columns",
+      "table": "orders"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'ongoing'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "orders"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "correction_id",
+      "entityType": "columns",
+      "table": "sale_price_corrections"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sale_id",
+      "entityType": "columns",
+      "table": "sale_price_corrections"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "old_selling_price",
+      "entityType": "columns",
+      "table": "sale_price_corrections"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "new_selling_price",
+      "entityType": "columns",
+      "table": "sale_price_corrections"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "corrected_at",
+      "entityType": "columns",
+      "table": "sale_price_corrections"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reason",
+      "entityType": "columns",
+      "table": "sale_price_corrections"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": true,
+      "default": null,
+      "generated": null,
+      "name": "sale_id",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "item_id",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "sale_date",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "selling_price",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "profit",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "integer",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "original_listed_price",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": "'active'",
+      "generated": null,
+      "name": "status",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "returned_date",
+      "entityType": "columns",
+      "table": "sales"
+    },
+    {
+      "columns": [
+        "order_id"
+      ],
+      "tableTo": "orders",
+      "columnsTo": [
+        "order_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_bundles_order_id_orders_order_id_fk",
+      "entityType": "fks",
+      "table": "bundles"
+    },
+    {
+      "columns": [
+        "bundle_id"
+      ],
+      "tableTo": "bundles",
+      "columnsTo": [
+        "bundle_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_inventory_items_bundle_id_bundles_bundle_id_fk",
+      "entityType": "fks",
+      "table": "inventory_items"
+    },
+    {
+      "columns": [
+        "bundle_id"
+      ],
+      "tableTo": "bundles",
+      "columnsTo": [
+        "bundle_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_loss_entries_bundle_id_bundles_bundle_id_fk",
+      "entityType": "fks",
+      "table": "loss_entries"
+    },
+    {
+      "columns": [
+        "replacement_bundle_id"
+      ],
+      "tableTo": "bundles",
+      "columnsTo": [
+        "bundle_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_loss_entries_replacement_bundle_id_bundles_bundle_id_fk",
+      "entityType": "fks",
+      "table": "loss_entries"
+    },
+    {
+      "columns": [
+        "sale_id"
+      ],
+      "tableTo": "sales",
+      "columnsTo": [
+        "sale_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_sale_price_corrections_sale_id_sales_sale_id_fk",
+      "entityType": "fks",
+      "table": "sale_price_corrections"
+    },
+    {
+      "columns": [
+        "item_id"
+      ],
+      "tableTo": "inventory_items",
+      "columnsTo": [
+        "item_id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "RESTRICT",
+      "nameExplicit": false,
+      "name": "fk_sales_item_id_inventory_items_item_id_fk",
+      "entityType": "fks",
+      "table": "sales"
+    },
+    {
+      "columns": [
+        "bundle_id"
+      ],
+      "nameExplicit": false,
+      "name": "bundles_pk",
+      "table": "bundles",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "item_id"
+      ],
+      "nameExplicit": false,
+      "name": "inventory_items_pk",
+      "table": "inventory_items",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "loss_id"
+      ],
+      "nameExplicit": false,
+      "name": "loss_entries_pk",
+      "table": "loss_entries",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "order_id"
+      ],
+      "nameExplicit": false,
+      "name": "orders_pk",
+      "table": "orders",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "correction_id"
+      ],
+      "nameExplicit": false,
+      "name": "sale_price_corrections_pk",
+      "table": "sale_price_corrections",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "sale_id"
+      ],
+      "nameExplicit": false,
+      "name": "sales_pk",
+      "table": "sales",
+      "entityType": "pks"
+    }
+  ],
+  "renames": []
+}
